@@ -46,7 +46,7 @@ public class Bingo {
         for(int i = 0; i < 5; i++){
             if(this.board[i][j] == nb){
                 this.booleans[i][j] = true;
-                return this.Checkwins();
+                return this.Checkwins(i, j);
             }
         }
         return false;
@@ -64,6 +64,16 @@ public class Bingo {
                 return true;
         }
         return false;
+    }
+
+    public boolean Checkwins(int x, int y) {
+        boolean winline = true;
+        boolean wincol = true;
+        for(int i = 0; i < 5 && (winline || wincol); i++){
+            wincol &= this.booleans[x][i];
+            winline &= this.booleans[i][y];
+        }
+        return wincol || winline;
     }
 
     public String toString(){
