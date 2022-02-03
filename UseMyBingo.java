@@ -12,34 +12,42 @@ public class UseMyBingo {
         System.out.println("Welcome to Bingo ! Have fun playing");
         System.out.println("The program arguments are : ");
         PrintArray(args);
-        boolean rnd = args.length >= 2 && args[1].equals("r");
 
-        if (args.length > 0){
-            switch (args[0]) {
-                case "FFF":
-                    FFF(rnd);
-                    break;
-                case "stats" :
-                    BingoStats
+        System.out.println("Choose the Bingo game you want to play");
+        System.out.println("game : Regular game in which you enter the number as they come");
+        System.out.println("stats : Creates n random boards and returns the first one to succeed with random generated numbers");
+        //System.out.println("");
+        //System.out.println("");
+        String[] games = {"game", "stats"};
+        int opt = GetStrInput(games, "Please enter one of the previous given answers");
+
+        switch (games[0]) {
+            case "game":
+                UsualGame();
+                break;
+            case "stats" :
+                BingoStats(15);
 
 
-                default:
-                    break;
-            }
+            default:
+                break;
         }
 
+    }
 
-        /*long totaltime = 0;
-        for(int i = 0; i < 10; i++){
-            long start = System.currentTimeMillis();
-            BingoStats(1000000);
-            long finish = System.currentTimeMillis();
-            long timeElapsed = finish - start;
-            totaltime += timeElapsed;
-        }*/
+    public static int GetStrInput(String[] options, String sentence) {
+        String answer = "";
+        Scanner inp = new Scanner(System.in);
 
-        //System.out.println(totaltime);
-
+        do{
+            answer = inp.nextLine();
+            for(int i = 0; i < options.length; i++){
+                if(answer.equals(options[i]))
+                    return i;
+            }
+            System.out.println(sentence + " and not " + answer);
+            PrintArray(options);
+        }while (true);
     }
 
     public static void PrintArray(String[] arr) {
@@ -52,7 +60,51 @@ public class UseMyBingo {
         System.out.println("}\n");
     }
 
-    public static void FFF(boolean rnd) {
+    public static String boardToString(int[][] board){
+        String mystring = "";
+        for(int i = 0; i < 5; i++){
+            mystring += "|";
+            for(int j = 0; j < 5; j++)
+                mystring += (board[i][j] < 10 ? "  " : " ") + board[i][j] + " |";
+            mystring += "\n";
+        }
+        return mystring;
+    }
+
+    public static int PromptNb(int mini, int maxi) {
+        System.out.printf("Please enter a number between %d and %d :\n", mini, maxi);
+        Scanner inp = new Scanner(System.in);
+
+        int nb = inp.nextInt();
+        while (mini > nb || nb > maxi){
+            System.out.printf("Please enter a number between %d and %d :\n", mini, maxi);
+            nb = inp.nextInt();
+        }
+        return nb;
+    }
+
+    public static int[][] Fillboard() {
+        int[][] limits = {{1, 19}, {20, 39}, {40, 59}, {60, 79}, {80, 99}};
+        int[][] board = new int[5][5];
+        for(int i = 0; i < 5; i++)
+            for(int j = 0; j < 5; j++){
+                System.out.println(boardToString(board));
+                board[j][i] = PromptNb(limits[i][0], limits[i][1]);
+            }
+
+            return board;
+    }
+
+    public static void UsualGame() {
+        Scanner inp = new Scanner(System.in);
+
+        System.out.println("Choose the Bingo board you want to play with");
+        System.out.println("rnd : Generates a random board");
+        System.out.println("in : Uses the precreated board");
+        System.out.println("new : Allows you to give your own new board");
+
+        String[] boardTypes = {"rnd", "in", "new"};
+        int type = GetStrInput(boardTypes, "Please enter one of the previous given answers");
         int[][] board = {
             { 7, 28, 42, 60, 82},
             { 3, 31, 48, 64, 88},
@@ -61,12 +113,22 @@ public class UseMyBingo {
             { 8, 32, 55, 67, 96},
         };
         Bingo bingo;
-        if (rnd)
-            bingo = new Bingo();
-        else
-            bingo = new Bingo(board);
-        PlayBingo(bingo);
+        switch (boardTypes[type]) {
+            case "rnd" :
+                bingo = new Bingo();
+                break;
+            case "in" :
+                bingo = new Bingo(board);
+                break;
+            case "new":
+                bingo = new Bingo(Fillboard());
+                break;
+            default:
+                bingo = new Bingo();
+                break;
+        }
 
+        PlayBingo(bingo);
     }
 
     public static void PlayBingo(Bingo bingo) {
