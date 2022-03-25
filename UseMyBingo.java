@@ -21,12 +21,12 @@ public class UseMyBingo {
         String[] games = {"game", "stats"};
         int opt = GetStrInput(games, "Please enter one of the previous given answers");
 
-        switch (games[0]) {
+        switch (games[opt]) {
             case "game":
                 UsualGame();
                 break;
             case "stats" :
-                BingoStats(15);
+                    BingoStats(15000000);
 
 
             default:
@@ -42,8 +42,9 @@ public class UseMyBingo {
         do{
             answer = inp.nextLine();
             for(int i = 0; i < options.length; i++){
-                if(answer.equals(options[i]))
+                if(answer.equals(options[i])){
                     return i;
+                }
             }
             System.out.println(sentence + " and not " + answer);
             PrintArray(options);
